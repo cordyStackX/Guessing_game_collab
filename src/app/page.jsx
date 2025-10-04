@@ -1,10 +1,10 @@
-
-import in_game from "./components/_game"
+"use client"
+import InGame from "./components/_game"
 
 export default function Home() {
   return (
     <>
-      <in_game />
+      <InGame />
     </>
   );
 }
