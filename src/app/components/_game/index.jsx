@@ -1,5 +1,6 @@
 import { useEffect } from 'react';
 import { useWordScrambleGame } from '../../modules/_game_logic/gameHooks';
+import { ConnectWalletBT } from "@cordystackx/cordy_minikit";
 
 export default function InGame() {
     const {
@@ -98,6 +99,7 @@ export default function InGame() {
                         </div>
 
                         <div className="tools-section">
+                            <ConnectWalletBT />
                             <button 
                                 className="tool-button" 
                                 onClick={() => useHelper('firstLetter')}

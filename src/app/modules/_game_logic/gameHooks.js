@@ -101,7 +101,9 @@ export const useGameTimer = (initialTime = 30) => {
         setIsPaused(false);
         
         intervalRef.current = setInterval(() => {
+
             setTimeRemaining(prev => {
+
                 const newTime = prev - 1;
                 if (newTime <= 0) {
                     setIsRunning(false);
@@ -131,7 +133,7 @@ export const useGameTimer = (initialTime = 30) => {
     }, []);
 
     const addTime = useCallback((seconds) => {
-        setTimeRemaining(prev => prev + seconds);
+        setTimeRemaining(prev => Math.min(prev + seconds, 50));
     }, []);
 
     const reset = useCallback((newTime = initialTime) => {
@@ -215,23 +217,18 @@ export const createWordItem = (answer, clue, category, trivia, difficulty = 1) =
 };
 
 // PowerUp factory function
-const createPowerUp = (name, maxUses, action) => ({
+const createPowerUp = (name, maxUses) => ({
     name,
     maxUses,
     remainingUses: maxUses,
-    action,
-    use(game) {
-        if (this.remainingUses > 0) {
-            this.remainingUses--;
-            return this.action(game);
-        }
-        return false;
-    },
     canUse() {
         return this.remainingUses > 0;
     },
     reset() {
-        this.remainingUses = this.maxUses;
+        return {
+            ...this,
+            remainingUses: this.maxUses
+        };
     }
 });
 
@@ -296,9 +293,9 @@ export const useWordScrambleGame = () => {
         setWordDatabase(shuffledWords);
         
         const initialPowerUps = {
-            firstLetter: createPowerUp('First Letter', 3, (game) => game.revealFirstLetter()),
-            skip: createPowerUp('Skip Word', 3, (game) => game.skipCurrentWord()),
-            time: createPowerUp('Extra Time', 2, (game) => game.addExtraTime())
+            firstLetter: createPowerUp('First Letter', 3),
+            skip: createPowerUp('Skip Word', 3),
+            time: createPowerUp('Extra Time', 2)
         };
         setPowerUps(initialPowerUps);
         
@@ -330,8 +327,10 @@ export const useWordScrambleGame = () => {
 
     const resetPowerUps = useCallback(() => {
         setPowerUps(prev => {
-            const reset = { ...prev };
-            Object.values(reset).forEach(powerUp => powerUp.reset());
+            const reset = {};
+            Object.keys(prev).forEach(key => {
+                reset[key] = prev[key].reset();
+            });
             return reset;
         });
     }, []);
@@ -557,7 +556,10 @@ export const useWordScrambleGame = () => {
         if (success) {
             setPowerUps(prev => ({
                 ...prev,
-                [type]: { ...prev[type], remainingUses: prev[type].remainingUses - 1 }
+                [type]: {
+                    ...prev[type],
+                    remainingUses: prev[type].remainingUses - 1
+                }
             }));
         }
     }, [gameState, powerUps, timer, nextWord]);
