@@ -1,5 +1,3 @@
-
-
 import { useEffect } from 'react';
 import { useWordScrambleGame } from '../../modules/_game_logic/gameHooks';
 
