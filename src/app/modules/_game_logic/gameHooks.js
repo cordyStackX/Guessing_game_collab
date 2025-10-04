@@ -291,16 +291,16 @@ export const useWordScrambleGame = () => {
     useEffect(() => {
         const shuffledWords = [...createWordDatabase()].sort(() => Math.random() - 0.5);
         setWordDatabase(shuffledWords);
-        
+
         const initialPowerUps = {
-            firstLetter: createPowerUp('First Letter', 3),
-            skip: createPowerUp('Skip Word', 3),
-            time: createPowerUp('Extra Time', 2)
+            firstLetter: createPowerUp('First Letter', 3, (game) => game.revealFirstLetter()), 
+            skip: createPowerUp('Skip Word', 3, () => true), 
+            time: createPowerUp('Extra Time', 3, () => true) 
         };
         setPowerUps(initialPowerUps);
-        
+
         achievementManager.initializeAchievements();
-    }, [achievementManager]);
+    }, []);
 
     const resetGameStats = useCallback(() => {
         setGameState(prev => ({
