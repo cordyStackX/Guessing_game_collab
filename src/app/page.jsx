@@ -1,9 +1,10 @@
 
+import in_game from "./components/_game"
 
 export default function Home() {
   return (
     <>
-      <h1></h1>
+      <in_game />
     </>
   );
 }
