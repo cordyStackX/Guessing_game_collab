@@ -6,6 +6,7 @@ const WalletProviders = dynamic(() => import('./providers'), {
 ssr: false,
 });
 
+
 export default function ClientWrapper({ children }) {
 return <WalletProviders>{children}</WalletProviders>;
 }
